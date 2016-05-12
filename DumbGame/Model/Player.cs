@@ -12,8 +12,8 @@ namespace DumbGame.Model
 		private int width;
 		private int height;
 
-		private Texture2D playerTexture;
-		private Vector2 position;
+		public Texture2D PlayerTexture;
+		public Vector2 Position;
 
 		public int Score
 		{
@@ -44,13 +44,14 @@ namespace DumbGame.Model
 			get{ return height; }
 		}
 
+
 		public void Initialize(Texture2D texture, Vector2 position)
 		{
 			this.active = true;
 			this.health = 100;
 			this.score = 0;
-			this.playerTexture = texture;
-			this.position = position;
+			this.PlayerTexture = texture;
+			this.Position = position;
 		}
 
 		public void Update()
@@ -60,7 +61,7 @@ namespace DumbGame.Model
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.Draw (playerTexture, position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+			spriteBatch.Draw (PlayerTexture, Position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 		}
 			
 	}
