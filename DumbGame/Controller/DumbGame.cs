@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
 using DumbGame.Model;
+using DumbGame.View;
 
 
 
@@ -46,10 +47,11 @@ namespace DumbGame
 		/// </summary>
 		protected override void Initialize ()
 		{
+			// TODO: Add your initialization logic here
 			player = new Player ();
 
 			// Set a constant player move speed
-			playerMoveSpeed = 8.0f;
+			playerMoveSpeed = 25.0f;
 
 			base.Initialize ();
 		}
@@ -63,9 +65,13 @@ namespace DumbGame
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
 
-			Vector2 playerPosition = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
-				GraphicsDevice.Viewport.TitleSafeArea.Y +GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
-			player.Initialize(Content.Load<Texture2D>("Texture/player"), playerPosition);
+			Animation playerAnimation = new Animation();
+			Texture2D playerTexture = Content.Load<Texture2D>("Animation/shipAnimation");
+			playerAnimation.Initialize(playerTexture, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
+
+			Vector2 playerPosition = new Vector2 (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
+				+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+			player.Initialize(playerAnimation, playerPosition);
 		}
 
 		/// <summary>
@@ -99,6 +105,8 @@ namespace DumbGame
 
 		private void UpdatePlayer(GameTime gameTime)
 		{
+			player.Update (gameTime);
+
 
 			// Get Thumbstick Controls
 			player.Position.X += currentGamePadState.ThumbSticks.Left.X *playerMoveSpeed;
@@ -127,8 +135,8 @@ namespace DumbGame
 			}
 
 			// Make sure that the player does not go out of bounds
-			player.Position.X = MathHelper.Clamp(player.Position.X, 0,GraphicsDevice.Viewport.Width - player.Width);
-			player.Position.Y = MathHelper.Clamp(player.Position.Y, 0,GraphicsDevice.Viewport.Height - player.Height);
+			player.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width/2);
+			player.Position.Y = MathHelper.Clamp(player.Position.Y, (player.Height/2), GraphicsDevice.Viewport.Height - (player.Height/2));
 		}
 
 		/// <summary>
@@ -138,6 +146,8 @@ namespace DumbGame
 		protected override void Draw (GameTime gameTime)
 		{
 			graphics.GraphicsDevice.Clear (Color.CornflowerBlue);
+            
+			//TODO: Add your drawing code here
             
 			// Start drawing
 			spriteBatch.Begin();

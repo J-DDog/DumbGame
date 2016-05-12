@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DumbGame.View;
+
 namespace DumbGame.Model
 {
 	public class Player
@@ -9,10 +11,8 @@ namespace DumbGame.Model
 		private int score;
 		private bool active;
 		private int health;
-		private int width;
-		private int height;
 
-		public Texture2D PlayerTexture;
+		private Animation PlayerAnimation;
 		public Vector2 Position;
 
 		public int Score
@@ -36,32 +36,34 @@ namespace DumbGame.Model
 
 		public int Width
 		{
-			get{ return width; }
+			get { return PlayerAnimation.FrameWidth; }
 		}
 
-		public int Height 
+		public int Height
 		{
-			get{ return height; }
+			get { return PlayerAnimation.FrameHeight; }
 		}
 
-
-		public void Initialize(Texture2D texture, Vector2 position)
+		public void Initialize(Animation animation, Vector2 position)
 		{
 			this.active = true;
 			this.health = 100;
 			this.score = 0;
-			this.PlayerTexture = texture;
+			this.PlayerAnimation = animation;
 			this.Position = position;
 		}
 
-		public void Update()
+		// Update the player animation
+		public void Update(GameTime gameTime)
 		{
-
+			PlayerAnimation.Position = Position;
+			PlayerAnimation.Update(gameTime);
 		}
 
+		// Draw the player
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.Draw (PlayerTexture, Position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+			PlayerAnimation.Draw(spriteBatch);
 		}
 			
 	}

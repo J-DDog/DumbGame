@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DumbGame.View
 {
-	public class animation
+	public class Animation
 	{
 		// The image representing the collection of images used for animation
 		private Texture2D spriteStrip;
@@ -84,7 +84,7 @@ namespace DumbGame.View
 		// Width of a given frame
 		public int FrameWidth
 		{
-			get{ return FrameWidth; }
+			get{ return frameWidth; }
 			set{ frameWidth = value; }
 		}
 
