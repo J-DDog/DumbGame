@@ -1,10 +1,11 @@
 ﻿<Properties StartupItem="DumbGame/DumbGame.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="DumbGame/Model/animation.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DumbGame/Controller/DumbGame.cs">
     <Files>
       <File FileName="DumbGame/Controller/Program.cs" Line="31" Column="1" />
-      <File FileName="DumbGame/View/Game1.cs" Line="62" Column="75" />
-      <File FileName="DumbGame/Model/animation.cs" Line="61" Column="31" />
+      <File FileName="DumbGame/Controller/DumbGame.cs" Line="54" Column="24" />
+      <File FileName="DumbGame/Model/Player.cs" Line="61" Column="4" />
+      <File FileName="DumbGame/View/animation.cs" Line="87" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
