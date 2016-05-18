@@ -65,13 +65,15 @@ namespace DumbGame
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
 
-			Animation playerAnimation = new Animation();
-			Texture2D playerTexture = Content.Load<Texture2D>("Animation/cloud_pink");
-			playerAnimation.Initialize(playerTexture, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
+			Animation playerAnimationL = new Animation();
+			Animation playerAnimationR = new Animation();
+			Texture2D playerTexture = Content.Load<Texture2D>("Animation/cloud_purple");
+			playerAnimationL.Initialize(playerTexture, Vector2.Zero, 1000, 1000, 9, 50, Color.White, 1f, true, false);
+			playerAnimationR.Initialize (playerTexture, Vector2.Zero, 1000, 1000, 9, 50, Color.White, 1f, true, true);
 
 			Vector2 playerPosition = new Vector2 (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
 				+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
-			player.Initialize(playerAnimation, playerPosition);
+			player.Initialize(playerAnimationL, playerPosition);
 		}
 
 		/// <summary>

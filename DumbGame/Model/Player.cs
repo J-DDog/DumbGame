@@ -65,6 +65,8 @@ namespace DumbGame.Model
 		{
 			PlayerAnimation.Draw(spriteBatch);
 		}
+
+
 			
 	}
 
