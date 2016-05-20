@@ -51,7 +51,7 @@ namespace DumbGame
 			player = new Player ();
 
 			// Set a constant player move speed
-			playerMoveSpeed = 25.0f;
+			playerMoveSpeed = 5.0f;
 
 			base.Initialize ();
 		}
@@ -67,13 +67,13 @@ namespace DumbGame
 
 			Animation playerAnimationL = new Animation();
 			Animation playerAnimationR = new Animation();
-			Texture2D playerTexture = Content.Load<Texture2D>("Animation/cloud_purple");
-			playerAnimationL.Initialize(playerTexture, Vector2.Zero, 1000, 1000, 9, 50, Color.White, 1f, true, false);
-			playerAnimationR.Initialize (playerTexture, Vector2.Zero, 1000, 1000, 9, 50, Color.White, 1f, true, true);
+			Texture2D playerTexture = Content.Load<Texture2D>("Animation/cloud_blue");
+			playerAnimationL.Initialize(playerTexture, Vector2.Zero, 1000, 447, 9, 50, Color.White, 0.3f, true, false);
+			playerAnimationR.Initialize (playerTexture, Vector2.Zero, 1000, 447, 9, 50, Color.White, 0.3f, true, true);
 
 			Vector2 playerPosition = new Vector2 (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
 				+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
-			player.Initialize(playerAnimationL, playerPosition);
+			player.Initialize(playerAnimationR, playerPosition);
 		}
 
 		/// <summary>
@@ -137,7 +137,7 @@ namespace DumbGame
 			}
 
 			// Make sure that the player does not go out of bounds
-			player.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width/2);
+			player.Position.X = MathHelper.Clamp(player.Position.X, (player.Height / 2), GraphicsDevice.Viewport.Width - (player.Height / 2));
 			player.Position.Y = MathHelper.Clamp(player.Position.Y, (player.Height/2), GraphicsDevice.Viewport.Height - (player.Height/2));
 		}
 

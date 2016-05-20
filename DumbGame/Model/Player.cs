@@ -36,12 +36,12 @@ namespace DumbGame.Model
 
 		public int Width
 		{
-			get { return PlayerAnimation.FrameWidth; }
+			get { return PlayerAnimation.GetScaledWidth(); }
 		}
 
 		public int Height
 		{
-			get { return PlayerAnimation.FrameHeight; }
+			get { return PlayerAnimation.GetScaledHeight(); }
 		}
 
 		public void Initialize(Animation animation, Vector2 position)

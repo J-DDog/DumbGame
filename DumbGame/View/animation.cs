@@ -130,7 +130,19 @@ namespace DumbGame.View
 			set{ reversed = value; }
 		}
 
-		public void Initialize(Texture2D texture, Vector2 position,
+        public int GetScaledHeight()
+        {
+            float newHeight = (float)FrameHeight * scale;
+            return (int)newHeight;
+        }
+
+        public int GetScaledWidth()
+        {
+            float newWidth = (float)FrameWidth * scale;
+            return (int)newWidth;
+        }
+
+        public void Initialize(Texture2D texture, Vector2 position,
 		int frameWidth, int frameHeight, int frameCount,
 			int frametime, Color color, float scale, bool looping, bool reversed)
 		{
@@ -200,7 +212,7 @@ namespace DumbGame.View
 			{
 				if(Reversed)
 				{
-					SpriteEffect filpEffect = SpriteEffects.FlipHorizontally;
+					SpriteEffects filpEffect = SpriteEffects.FlipHorizontally;
 
 					spriteBatch.Draw(spriteStrip, destinationRect, sourceRect, color,
 						0.0f,  new Vector2(0,0),   filpEffect,   0.0f);
