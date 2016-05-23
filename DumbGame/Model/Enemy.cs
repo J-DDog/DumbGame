@@ -51,7 +51,6 @@ namespace DumbGame
 			// We initialize the enemy to be active so it will be update in the game
 			Active = true;
 
-
 			// Set the health of the enemy
 			Health = 10;
 
