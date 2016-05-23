@@ -51,7 +51,15 @@ namespace DumbGame
 		// A random number generator
 		Random random;
 
-		public DumbGame ()
+        // Projectile Image and list
+        Texture2D projectileTexture;
+        List<Projectile> projectiles;
+
+        // The rate of fire of the player laser
+        TimeSpan fireTime;
+        TimeSpan previousFireTime;
+
+        public DumbGame ()
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";
@@ -86,7 +94,13 @@ namespace DumbGame
 			// Initialize our random number generator
 			random = new Random();
 
-			base.Initialize ();
+            //Initiallizing the projectiles list
+            projectiles = new List<Projectile>();
+
+            // Set the laser to fire every quarter second
+            fireTime = TimeSpan.FromSeconds(.15f);
+
+            base.Initialize ();
 		}
 
 		/// <summary>
@@ -102,12 +116,13 @@ namespace DumbGame
 			// Load the parallaxing background
 			bgLayer1.Initialize(Content, "Texture/bgLayer1", GraphicsDevice.Viewport.Width, -1);
 			bgLayer2.Initialize(Content, "Texture/bgLayer2", GraphicsDevice.Viewport.Width, -2);
-
 			mainBackground = Content.Load<Texture2D>("Texture/mainbackground");
 
+            // Load enemy and projectile textures
 			enemyTexture = Content.Load<Texture2D>("Animation/mineAnimation");
+            projectileTexture = Content.Load<Texture2D>("laser");
 
-			Animation playerAnimation = new Animation();
+            Animation playerAnimation = new Animation();
 			Texture2D playerTexture = Content.Load<Texture2D>("Animation/shipAnimation");
 			playerAnimation.Initialize(playerTexture, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
 
@@ -148,8 +163,11 @@ namespace DumbGame
 			// Update the collision
 			UpdateCollision();
 
-			//Update the player
-			UpdatePlayer(gameTime);
+            // Update the projectiles
+            UpdateProjectiles();
+
+            //Update the player
+            UpdatePlayer(gameTime);
 
 			// Update the enemies
 			UpdateEnemies(gameTime);
@@ -157,7 +175,14 @@ namespace DumbGame
 			base.Update (gameTime);
 		}
 
-		private void UpdatePlayer(GameTime gameTime)
+        private void AddProjectile(Vector2 position)
+        {
+            Projectile projectile = new Projectile();
+            projectile.Initialize(GraphicsDevice.Viewport, projectileTexture, position);
+            projectiles.Add(projectile);
+        }
+
+        private void UpdatePlayer(GameTime gameTime)
 		{
 			player.Update (gameTime);
 
@@ -191,13 +216,37 @@ namespace DumbGame
 			// Make sure that the player does not go out of bounds
 			player.Position.X = MathHelper.Clamp(player.Position.X, (player.Height / 2), GraphicsDevice.Viewport.Width - (player.Height / 2));
 			player.Position.Y = MathHelper.Clamp(player.Position.Y, (player.Height/2), GraphicsDevice.Viewport.Height - (player.Height/2));
-		}
 
-		/// <summary>
-		/// This is called when the game should draw itself.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-		protected override void Draw (GameTime gameTime)
+            // Fire only every interval we set as the fireTime
+            if (gameTime.TotalGameTime - previousFireTime > fireTime)
+            {
+                // Reset our current time
+                previousFireTime = gameTime.TotalGameTime;
+
+                // Add the projectile, but add it to the front and center of the player
+                AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+            }
+        }
+
+        private void UpdateProjectiles()
+        {
+            // Update the Projectiles
+            for (int i = projectiles.Count - 1; i >= 0; i--)
+            {
+                projectiles[i].Update();
+
+                if (projectiles[i].Active == false)
+                {
+                    projectiles.RemoveAt(i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// This is called when the game should draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Draw (GameTime gameTime)
 		{
 			graphics.GraphicsDevice.Clear (Color.CornflowerBlue);
             
@@ -218,8 +267,14 @@ namespace DumbGame
 				enemies[i].Draw(spriteBatch);
 			}
 
-			// Draw the Player
-			player.Draw(spriteBatch);
+            // Draw the Projectiles
+            for (int i = 0; i < projectiles.Count; i++)
+            {
+                projectiles[i].Draw(spriteBatch);
+            }
+
+            // Draw the Player
+            player.Draw(spriteBatch);
 
 			// Stop drawing
 			spriteBatch.End();
@@ -310,7 +365,30 @@ namespace DumbGame
 				}
 
 			}
-		}
+
+            // Projectile vs Enemy Collision
+            for (int i = 0; i < projectiles.Count; i++)
+            {
+                for (int j = 0; j < enemies.Count; j++)
+                {
+                    // Create the rectangles we need to determine if we collided with each other
+                    rectangle1 = new Rectangle((int)projectiles[i].Position.X -
+                    projectiles[i].Width / 2, (int)projectiles[i].Position.Y -
+                    projectiles[i].Height / 2, projectiles[i].Width, projectiles[i].Height);
+
+                    rectangle2 = new Rectangle((int)enemies[j].Position.X - enemies[j].Width / 2,
+                    (int)enemies[j].Position.Y - enemies[j].Height / 2,
+                    enemies[j].Width, enemies[j].Height);
+
+                    // Determine if the two objects collided with each other
+                    if (rectangle1.Intersects(rectangle2))
+                    {
+                        enemies[j].Health -= projectiles[i].Damage;
+                        projectiles[i].Active = false;
+                    }
+                }
+            }
+        }
 	}
 }
 
