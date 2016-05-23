@@ -52,6 +52,7 @@
     <Compile Include="Controller\DumbGame.cs" />
     <Compile Include="View\Animation.cs" />
     <Compile Include="Controller\ParallaxingBackground.cs" />
+    <Compile Include="Model\Enemy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />

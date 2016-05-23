@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 using DumbGame.Model;
 using DumbGame.View;
-
 
 
 namespace DumbGame
@@ -33,6 +33,24 @@ namespace DumbGame
 		//A movement speed for the player
 		float playerMoveSpeed;
 
+		// Image used to display the static background
+		Texture2D mainBackground;
+
+		// Parallaxing Layers
+		ParallaxingBackground bgLayer1;
+		ParallaxingBackground bgLayer2;
+
+		// Enemies
+		Texture2D enemyTexture;
+		List<Enemy> enemies;
+
+		// The rate at which the enemies appear
+		TimeSpan enemySpawnTime;
+		TimeSpan previousSpawnTime;
+
+		// A random number generator
+		Random random;
+
 		public DumbGame ()
 		{
 			graphics = new GraphicsDeviceManager (this);
@@ -53,6 +71,9 @@ namespace DumbGame
 			// Set a constant player move speed
 			playerMoveSpeed = 5.0f;
 
+			bgLayer1 = new ParallaxingBackground();
+			bgLayer2 = new ParallaxingBackground();
+
 			base.Initialize ();
 		}
 
@@ -62,18 +83,26 @@ namespace DumbGame
 		/// </summary>
 		protected override void LoadContent ()
 		{
-			// Create a new SpriteBatch, which can be used to draw textures.
+			// Create a new SpriteBatch, which can be used to draw textures.+
+			       
 			spriteBatch = new SpriteBatch (GraphicsDevice);
 
-			Animation playerAnimationL = new Animation();
-			Animation playerAnimationR = new Animation();
-			Texture2D playerTexture = Content.Load<Texture2D>("Animation/cloud_blue");
-			playerAnimationL.Initialize(playerTexture, Vector2.Zero, 1000, 447, 9, 50, Color.White, 0.3f, true, false);
-			playerAnimationR.Initialize (playerTexture, Vector2.Zero, 1000, 447, 9, 50, Color.White, 0.3f, true, true);
+			// Load the parallaxing background
+			bgLayer1.Initialize(Content, "Texture/bgLayer1", GraphicsDevice.Viewport.Width, -1);
+			bgLayer2.Initialize(Content, "Texture/bgLayer2", GraphicsDevice.Viewport.Width, -2);
+
+			mainBackground = Content.Load<Texture2D>("Texture/mainbackground");
+
+			Animation playerAnimation = new Animation();
+			Texture2D playerTexture = Content.Load<Texture2D>("Animation/shipAnimation");
+			playerAnimation.Initialize(playerTexture, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
 
 			Vector2 playerPosition = new Vector2 (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
 				+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
-			player.Initialize(playerAnimationR, playerPosition);
+			player.Initialize(playerAnimation, playerPosition);
+
+
+
 		}
 
 		/// <summary>
@@ -98,10 +127,13 @@ namespace DumbGame
 			currentKeyboardState = Keyboard.GetState();
 			currentGamePadState = GamePad.GetState(PlayerIndex.One);
 
+			// Update the parallaxing background
+			bgLayer1.Update();
+			bgLayer2.Update();
 
 			//Update the player
 			UpdatePlayer(gameTime);
-            
+
 			base.Update (gameTime);
 		}
 
@@ -153,6 +185,12 @@ namespace DumbGame
             
 			// Start drawing
 			spriteBatch.Begin();
+
+			spriteBatch.Draw(mainBackground, Vector2.Zero, Color.White);
+
+			// Draw the moving background
+			bgLayer1.Draw(spriteBatch);
+			bgLayer2.Draw(spriteBatch);
 
 			// Draw the Player
 			player.Draw(spriteBatch);

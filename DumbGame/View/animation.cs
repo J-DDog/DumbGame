@@ -144,7 +144,7 @@ namespace DumbGame.View
 
         public void Initialize(Texture2D texture, Vector2 position,
 		int frameWidth, int frameHeight, int frameCount,
-			int frametime, Color color, float scale, bool looping, bool reversed)
+			int frametime, Color color, float scale, bool looping)
 		{
 			// Keep a local copy of the values passed in
 			this.color = color;
@@ -164,7 +164,6 @@ namespace DumbGame.View
 
 			// Set the Animation to active by default
 			Active = true;
-			Reversed = reversed;
 		}
 		public void Update(GameTime gameTime)
 		{
@@ -210,17 +209,7 @@ namespace DumbGame.View
 			// Only draw the animation when we are active
 			if (Active)
 			{
-				if(Reversed)
-				{
-					SpriteEffects filpEffect = SpriteEffects.FlipHorizontally;
-
-					spriteBatch.Draw(spriteStrip, destinationRect, sourceRect, color,
-						0.0f,  new Vector2(0,0),   filpEffect,   0.0f);
-				}
-				else
-				{
-					spriteBatch.Draw(spriteStrip, destinationRect, sourceRect, color);
-				}
+				spriteBatch.Draw (spriteStrip, destinationRect, sourceRect, color);
 
 			}
 		}
