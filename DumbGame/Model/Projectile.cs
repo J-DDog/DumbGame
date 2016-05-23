@@ -7,16 +7,40 @@ namespace DumbGame
 	public class Projectile
 	{
 		// Image representing the Projectile
-		public Texture2D Texture;
+		private Texture2D texture;
 
-		// Position of the Projectile relative to the upper left side of the screen
-		public Vector2 Position;
+        public Texture2D Texture
+        {
+            get { return texture; }
+            set { texture = value; }
+        }
 
-		// State of the Projectile
-		public bool Active;
+        // Position of the Projectile relative to the upper left side of the screen
+        private Vector2 position;
 
-		// The amount of damage the projectile can inflict to an enemy
-		public int Damage;
+        public Vector2 Position
+        {
+            get { return position; }
+            set { position = value; }
+        }
+
+        // State of the Projectile
+        private bool active;
+
+		public bool Active
+        {
+            get { return active; }
+            set { active = value; }
+        }
+
+        // The amount of damage the projectile can inflict to an enemy
+        private int damage;
+
+		public int Damage
+        {
+            get { return damage; }
+            set { damage = value; }
+        }
 
 		// Represents the viewable boundary of the game
 		Viewport viewport;
@@ -39,8 +63,8 @@ namespace DumbGame
 
 		public void Initialize(Viewport viewport, Texture2D texture, Vector2 position)
 		{
-			Texture = texture;
-			Position = position;
+			this.texture = texture;
+			this.position = position;
 			this.viewport = viewport;
 
 			Active = true;
@@ -53,7 +77,7 @@ namespace DumbGame
 		public void Update()
 		{
 			// Projectiles always move to the right
-			Position.X += projectileMoveSpeed;
+			this.position.X += projectileMoveSpeed;
 
 			// Deactivate the bullet if it goes out of screen
 			if (Position.X + Texture.Width / 2 > viewport.Width)
