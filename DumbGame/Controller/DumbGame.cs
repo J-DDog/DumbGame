@@ -59,6 +59,10 @@ namespace DumbGame
         TimeSpan fireTime;
         TimeSpan previousFireTime;
 
+        // Explosion Variables
+        Texture2D explosionTexture;
+        List<Animation> explosions;
+
         public DumbGame ()
 		{
 			graphics = new GraphicsDeviceManager (this);
@@ -94,11 +98,14 @@ namespace DumbGame
 			// Initialize our random number generator
 			random = new Random();
 
-            //Initiallizing the projectiles list
+            // Initiallizing the projectiles list
             projectiles = new List<Projectile>();
 
             // Set the laser to fire every quarter second
             fireTime = TimeSpan.FromSeconds(.15f);
+
+            // Initializing the Explostions list
+            explosions = new List<Animation>();
 
             base.Initialize ();
 		}
@@ -118,10 +125,12 @@ namespace DumbGame
 			bgLayer2.Initialize(Content, "Texture/bgLayer2", GraphicsDevice.Viewport.Width, -2);
 			mainBackground = Content.Load<Texture2D>("Texture/mainbackground");
 
-            // Load enemy and projectile textures
+            // Load Enemy, Projectile and Explostion Textures
 			enemyTexture = Content.Load<Texture2D>("Animation/mineAnimation");
-            projectileTexture = Content.Load<Texture2D>("laser");
+            projectileTexture = Content.Load<Texture2D>("Texture/laser");
+            explosionTexture = Content.Load<Texture2D>("Animation/explosion");
 
+            // Loading Player Animation
             Animation playerAnimation = new Animation();
 			Texture2D playerTexture = Content.Load<Texture2D>("Animation/shipAnimation");
 			playerAnimation.Initialize(playerTexture, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
@@ -129,8 +138,7 @@ namespace DumbGame
 			Vector2 playerPosition = new Vector2 (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
 				+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 			player.Initialize(playerAnimation, playerPosition);
-
-
+            
 
 		}
 
@@ -166,14 +174,24 @@ namespace DumbGame
             // Update the projectiles
             UpdateProjectiles();
 
-            //Update the player
+            // Update the player
             UpdatePlayer(gameTime);
 
-			// Update the enemies
-			UpdateEnemies(gameTime);
+            // Update the explosions
+            UpdateExplosions(gameTime);
+
+            // Update the enemies
+            UpdateEnemies(gameTime);
 
 			base.Update (gameTime);
 		}
+
+        private void AddExplosion(Vector2 position)
+        {
+            Animation explosion = new Animation();
+            explosion.Initialize(explosionTexture, position, 134, 134, 12, 45, Color.White, 1f, false);
+            explosions.Add(explosion);
+        }
 
         private void AddProjectile(Vector2 position)
         {
@@ -228,6 +246,18 @@ namespace DumbGame
             }
         }
 
+        private void UpdateExplosions(GameTime gameTime)
+        {
+            for (int i = explosions.Count - 1; i >= 0; i--)
+            {
+                explosions[i].Update(gameTime);
+                if (explosions[i].Active == false)
+                {
+                    explosions.RemoveAt(i);
+                }
+            }
+        }
+
         private void UpdateProjectiles()
         {
             // Update the Projectiles
@@ -276,8 +306,14 @@ namespace DumbGame
             // Draw the Player
             player.Draw(spriteBatch);
 
-			// Stop drawing
-			spriteBatch.End();
+            // Draw the explosions
+            for (int i = 0; i < explosions.Count; i++)
+            {
+                explosions[i].Draw(spriteBatch);
+            }
+
+            // Stop drawing
+            spriteBatch.End();
 
 			base.Draw (gameTime);
 		}
@@ -321,7 +357,14 @@ namespace DumbGame
 
 				if (enemies[i].Active == false)
 				{
-					enemies.RemoveAt(i);
+                    // If not active and health <= 0
+                    if (enemies[i].Health <= 0)
+                    {
+                        // Add an explosion
+                        AddExplosion(enemies[i].Position);
+                    }
+
+                    enemies.RemoveAt(i);
 				} 
 			}
 		}
