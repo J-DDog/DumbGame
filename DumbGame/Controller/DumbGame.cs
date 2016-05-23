@@ -145,14 +145,14 @@ namespace DumbGame
 			bgLayer1.Update();
 			bgLayer2.Update();
 
+			// Update the collision
+			UpdateCollision();
+
 			//Update the player
 			UpdatePlayer(gameTime);
 
 			// Update the enemies
 			UpdateEnemies(gameTime);
-
-			// Update the collision
-			UpdateCollision();
 
 			base.Update (gameTime);
 		}

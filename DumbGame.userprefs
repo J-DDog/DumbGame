@@ -3,25 +3,13 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="DumbGame/Controller/DumbGame.cs">
     <Files>
       <File FileName="DumbGame/Controller/Program.cs" Line="1" Column="1" />
-      <File FileName="DumbGame/Controller/DumbGame.cs" Line="69" Column="65" />
-      <File FileName="DumbGame/Model/Player.cs" Line="1" Column="1" />
-      <File FileName="DumbGame/View/animation.cs" Line="1" Column="1" />
-      <File FileName="DumbGame/Controller/ParallaxingBackground.cs" Line="7" Column="3" />
+      <File FileName="DumbGame/Controller/DumbGame.cs" Line="156" Column="4" />
+      <File FileName="DumbGame/Model/Player.cs" Line="4" Column="1" />
+      <File FileName="DumbGame/View/animation.cs" Line="193" Column="38" />
+      <File FileName="DumbGame/Controller/ParallaxingBackground.cs" Line="26" Column="4" />
+      <File FileName="DumbGame/Model/Enemy.cs" Line="46" Column="1" />
+      <File FileName="DumbGame/Model/Projectile.cs" Line="68" Column="3" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State name="__root__">
-          <Node name="DumbGame" expanded="True">
-            <Node name="DumbGame" expanded="True">
-              <Node name="Content" expanded="True">
-                <Node name="Content.mgcb" selected="True" />
-              </Node>
-              <Node name="Controller" expanded="True" />
-            </Node>
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
