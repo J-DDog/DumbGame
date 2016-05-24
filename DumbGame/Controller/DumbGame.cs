@@ -18,6 +18,14 @@ namespace DumbGame
 	/// </summary>
 	public class DumbGame : Game
 	{
+
+        enum GameState
+        {
+            Loading,
+            Menu,
+            Playing
+        }
+
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 
@@ -80,6 +88,9 @@ namespace DumbGame
 		// The font used to display UI elements
 		SpriteFont font;
 
+        // The current state of the game
+        GameState state;
+
 		public DumbGame ()
 		{
 			graphics = new GraphicsDeviceManager (this);
@@ -127,6 +138,8 @@ namespace DumbGame
             // Initializing the Explostions list
             explosions = new List<Animation>();
 
+            state = GameState.Loading;
+
             base.Initialize ();
 		}
 
@@ -137,7 +150,6 @@ namespace DumbGame
 		protected override void LoadContent ()
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.+
-			       
 			spriteBatch = new SpriteBatch (GraphicsDevice);
 
 			// Load the parallaxing background
@@ -171,8 +183,9 @@ namespace DumbGame
 			Vector2 playerPosition = new Vector2 (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
 				+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 			player.Initialize(playerAnimation, playerPosition);
-            
 
+            // Donde loading
+            state = GameState.Menu;
 		}
 
 		/// <summary>
@@ -182,42 +195,73 @@ namespace DumbGame
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update (GameTime gameTime)
 		{
-			// For Mobile devices, this logic will close the Game when the Back button is pressed
-			// Exit() is obsolete on iOS
-			#if !__IOS__ &&  !__TVOS__
-			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState ().IsKeyDown (Keys.Escape))
-				Exit ();
-			#endif
-            
-			// Save the previous state of the keyboard and game pad so we can determinesingle key/button presses
-			previousGamePadState = currentGamePadState;
-			previousKeyboardState = currentKeyboardState;
+            // Save the previous state of the keyboard and game pad so we can determinesingle key/button presses
+            previousGamePadState = currentGamePadState;
+            previousKeyboardState = currentKeyboardState;
 
-			// Read the current state of the keyboard and gamepad and store it
-			currentKeyboardState = Keyboard.GetState();
-			currentGamePadState = GamePad.GetState(PlayerIndex.One);
+            // Read the current state of the keyboard and gamepad and store it
+            currentKeyboardState = Keyboard.GetState();
+            currentGamePadState = GamePad.GetState(PlayerIndex.One);
 
-			// Update the parallaxing background
-			bgLayer1.Update();
-			bgLayer2.Update();
+            // Update the parallaxing background
+            bgLayer1.Update();
+            bgLayer2.Update();
 
-			// Update the collision
-			UpdateCollision();
+            if (state == GameState.Playing)
+            {
+                // For Mobile devices, this logic will close the Game when the Back button is pressed
+                // Exit() is obsolete on iOS
+#if !__IOS__ && !__TVOS__
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    Exit();
+#endif
 
-            // Update the projectiles
-            UpdateProjectiles();
+                // Save the previous state of the keyboard and game pad so we can determinesingle key/button presses
+                previousGamePadState = currentGamePadState;
+                previousKeyboardState = currentKeyboardState;
 
-            // Update the player
-            UpdatePlayer(gameTime);
+                // Read the current state of the keyboard and gamepad and store it
+                currentKeyboardState = Keyboard.GetState();
+                currentGamePadState = GamePad.GetState(PlayerIndex.One);
 
-            // Update the explosions
-            UpdateExplosions(gameTime);
+                // Update the parallaxing background
+                bgLayer1.Update();
+                bgLayer2.Update();
 
-            // Update the enemies
-            UpdateEnemies(gameTime);
+                // Update the collision
+                UpdateCollision();
 
-			base.Update (gameTime);
+                // Update the projectiles
+                UpdateProjectiles();
+
+                // Update the player
+                UpdatePlayer(gameTime);
+
+                // Update the explosions
+                UpdateExplosions(gameTime);
+
+                // Update the enemies
+                UpdateEnemies(gameTime);
+
+                base.Update(gameTime);
+            }
+            else if(state == GameState.Menu)
+            {
+
+                // Update play Button
+                UpdatePlayButton(gameTime);
+
+            }
+            else
+            {
+
+            }
 		}
+
+        private void UpdatePlayButton(GameTime gameTime)
+        {
+
+        }
 
         private void AddExplosion(Vector2 position)
         {
@@ -336,24 +380,45 @@ namespace DumbGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw (GameTime gameTime)
 		{
-			graphics.GraphicsDevice.Clear (Color.CornflowerBlue);
-            
-			//TODO: Add your drawing code here
-            
-			// Start drawing
-			spriteBatch.Begin();
+            graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-			spriteBatch.Draw(mainBackground, Vector2.Zero, Color.White);
+            // Start drawing
+            spriteBatch.Begin();
 
-			// Draw the moving background
-			bgLayer1.Draw(spriteBatch);
-			bgLayer2.Draw(spriteBatch);
+            if (state == GameState.Playing)
+            {
+                drawPlaying();
+            }
+            else if(state == GameState.Menu)
+            {
+                drawMenu();
+            }
+            else
+            {
 
-			// Draw the Enemies
-			for (int i = 0; i < enemies.Count; i++)
-			{
-				enemies[i].Draw(spriteBatch);
-			}
+            }
+
+            // Stop drawing
+            spriteBatch.End();
+
+            base.Draw (gameTime);
+		}
+
+        private void drawMenu()
+        {
+            drawBackground();
+        }
+
+        private void drawPlaying()
+        {
+
+            drawBackground();
+
+            // Draw the Enemies
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                enemies[i].Draw(spriteBatch);
+            }
 
             // Draw the Projectiles
             for (int i = 0; i < projectiles.Count; i++)
@@ -370,16 +435,23 @@ namespace DumbGame
                 explosions[i].Draw(spriteBatch);
             }
 
-			// Draw the score
-			spriteBatch.DrawString(font, "score: " + score, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
-			// Draw the player health
-			spriteBatch.DrawString(font, "health: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
+            // Draw the score
+            spriteBatch.DrawString(font, "score: " + score, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
+            // Draw the player health
+            spriteBatch.DrawString(font, "health: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
 
-            // Stop drawing
-            spriteBatch.End();
+            
+        }
 
-			base.Draw (gameTime);
-		}
+        private void drawBackground()
+        {
+            // Draw the base of the background
+            spriteBatch.Draw(mainBackground, Vector2.Zero, Color.White);
+
+            // Draw the moving background
+            bgLayer1.Draw(spriteBatch);
+            bgLayer2.Draw(spriteBatch);
+        }
 
 		private void AddEnemy()
 		{ 
