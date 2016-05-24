@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using DumbGame.Model;
 using DumbGame.View;
@@ -63,7 +65,22 @@ namespace DumbGame
         Texture2D explosionTexture;
         List<Animation> explosions;
 
-        public DumbGame ()
+		// The sound that is played when a laser is fired
+		SoundEffect laserSound;
+
+		// The sound used when the player or an enemy dies
+		SoundEffect explosionSound;
+
+		// The music played during gameplay
+		Song gameplayMusic;
+
+		// Number that holds the player score
+		int score;
+
+		// The font used to display UI elements
+		SpriteFont font;
+
+		public DumbGame ()
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";
@@ -82,6 +99,9 @@ namespace DumbGame
 
 			// Set a constant player move speed
 			playerMoveSpeed = 5.0f;
+
+			//Set player's score to zero
+			score = 0;
 
 			bgLayer1 = new ParallaxingBackground();
 			bgLayer2 = new ParallaxingBackground();
@@ -126,9 +146,22 @@ namespace DumbGame
 			mainBackground = Content.Load<Texture2D>("Texture/mainbackground");
 
             // Load Enemy, Projectile and Explostion Textures
-			enemyTexture = Content.Load<Texture2D>("Animation/mineAnimation");
+			enemyTexture = Content.Load<Texture2D>("Animation/enemyAnimation");
             projectileTexture = Content.Load<Texture2D>("Texture/laser");
             explosionTexture = Content.Load<Texture2D>("Animation/explosion");
+
+			// Load the score font
+			font = Content.Load<SpriteFont>("Font/gameFont");
+
+			// Load the music
+			gameplayMusic = Content.Load<Song>("Sound/gameMusic");
+
+			// Load the laser and explosion sound effect
+			laserSound = Content.Load<SoundEffect>("Sound/laserFire");
+			explosionSound = Content.Load<SoundEffect>("Sound/good_job_jared");
+
+			// Start the music right away
+			PlayMusic(gameplayMusic);
 
             // Loading Player Animation
             Animation playerAnimation = new Animation();
@@ -243,7 +276,17 @@ namespace DumbGame
 
                 // Add the projectile, but add it to the front and center of the player
                 AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+
+				// Play the laser sound
+				laserSound.Play();
             }
+
+			// reset score if player health goes to zero
+			if (player.Health <= 0)
+			{
+				player.Health = 100;
+				score = 0;
+			}
         }
 
         private void UpdateExplosions(GameTime gameTime)
@@ -271,6 +314,21 @@ namespace DumbGame
                 }
             }
         }
+
+		private void PlayMusic(Song song)
+		{
+			// Due to the way the MediaPlayer plays music,
+			// we have to catch the exception. Music will play when the game is not tethered
+			try
+			{
+				// Play the music
+//				MediaPlayer.Play(song);
+
+				// Loop the currently playing song
+				MediaPlayer.IsRepeating = true;
+			}
+			catch { }
+		}
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -311,6 +369,11 @@ namespace DumbGame
             {
                 explosions[i].Draw(spriteBatch);
             }
+
+			// Draw the score
+			spriteBatch.DrawString(font, "score: " + score, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
+			// Draw the player health
+			spriteBatch.DrawString(font, "health: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
 
             // Stop drawing
             spriteBatch.End();
@@ -362,6 +425,12 @@ namespace DumbGame
                     {
                         // Add an explosion
                         AddExplosion(enemies[i].Position);
+
+						// Play the explosion sound
+						explosionSound.Play();
+
+						//Add to the player's score
+						score += enemies[i].Value;
                     }
 
                     enemies.RemoveAt(i);
