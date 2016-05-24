@@ -146,7 +146,7 @@ namespace DumbGame
 			mainBackground = Content.Load<Texture2D>("Texture/mainbackground");
 
             // Load Enemy, Projectile and Explostion Textures
-			enemyTexture = Content.Load<Texture2D>("Animation/enemyAnimation");
+			enemyTexture = Content.Load<Texture2D>("Animation/mineAnimation");
             projectileTexture = Content.Load<Texture2D>("Texture/laser");
             explosionTexture = Content.Load<Texture2D>("Animation/explosion");
 
