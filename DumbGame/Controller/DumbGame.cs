@@ -46,6 +46,12 @@ namespace DumbGame
 		// Image used to display the static background
 		Texture2D mainBackground;
 
+        // Image for Title
+        Texture2D titleImage;
+
+        // Image for play Button
+        Texture2D playButtonImage;
+
 		// Parallaxing Layers
 		ParallaxingBackground bgLayer1;
 		ParallaxingBackground bgLayer2;
@@ -195,6 +201,9 @@ namespace DumbGame
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update (GameTime gameTime)
 		{
+
+            
+
             // Save the previous state of the keyboard and game pad so we can determinesingle key/button presses
             previousGamePadState = currentGamePadState;
             previousKeyboardState = currentKeyboardState;
@@ -407,6 +416,10 @@ namespace DumbGame
         private void drawMenu()
         {
             drawBackground();
+
+            spriteBatch.DrawString(font, "Steam Baloons", new Vector2(GraphicsDevice.Viewport.Width*0.1875f, GraphicsDevice.Viewport.Height*0.125f), Color.Gold);
+
+
         }
 
         private void drawPlaying()
