@@ -33,7 +33,7 @@ namespace DumbGame
 		GamePadState previousGamePadState; 
 
 		//A movement speed for the player
-		float playexrMoveSpeed;
+		float playerMoveSpeed;
 
 		// Image used to display the static background
 		Texture2D mainBackground;
