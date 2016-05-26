@@ -33,7 +33,7 @@ namespace DumbGame
 		GamePadState previousGamePadState; 
 
 		//A movement speed for the player
-		float playerMoveSpeed;
+		float playexrMoveSpeed;
 
 		// Image used to display the static background
 		Texture2D mainBackground;
@@ -495,7 +495,15 @@ namespace DumbGame
                     // Determine if the two objects collided with each other
                     if (rectangle1.Intersects(rectangle2))
                     {
-                        enemies[j].Health -= projectiles[i].Damage;
+						if(rectangle1.Y+rectangle1.Height < rectangle2.Y + rectangle2.Height/2)
+						{
+							enemies[j].Health -= projectiles[i].Damage * 2;
+						}
+						else
+						{
+							enemies[j].Health -= projectiles[i].Damage;
+						}
+                        
                         projectiles[i].Active = false;
                     }
                 }
