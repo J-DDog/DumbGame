@@ -402,10 +402,6 @@ namespace DumbGame
             {
                 drawMenu();
             }
-            else
-            {
-
-            }
 
             // Stop drawing
             spriteBatch.End();
@@ -525,6 +521,25 @@ namespace DumbGame
 
 		private void UpdateCollision()
 		{
+			if (state = GameState.Playing) {
+				updateCollisionsPlay ();
+        
+			} 
+			else if(state = GameState.Menu)
+			{
+				updateCollisionsMenu ();
+			}
+
+		}
+
+		private void updateCollisionsMenu()
+		{
+				
+
+		}
+
+		private void updateCollisionsPlay()
+		{
 			// Use the Rectangle's built-in intersect function to 
 			// determine if two objects are overlapping
 			Rectangle rectangle1;
@@ -563,23 +578,23 @@ namespace DumbGame
 
 			}
 
-            // Projectile vs Enemy Collision
-            for (int i = 0; i < projectiles.Count; i++)
-            {
-                for (int j = 0; j < enemies.Count; j++)
-                {
-                    // Create the rectangles we need to determine if we collided with each other
-                    rectangle1 = new Rectangle((int)projectiles[i].Position.X -
-                    projectiles[i].Width / 2, (int)projectiles[i].Position.Y -
-                    projectiles[i].Height / 2, projectiles[i].Width, projectiles[i].Height);
+			// Projectile vs Enemy Collision
+			for (int i = 0; i < projectiles.Count; i++)
+			{
+				for (int j = 0; j < enemies.Count; j++)
+				{
+					// Create the rectangles we need to determine if we collided with each other
+					rectangle1 = new Rectangle((int)projectiles[i].Position.X -
+						projectiles[i].Width / 2, (int)projectiles[i].Position.Y -
+						projectiles[i].Height / 2, projectiles[i].Width, projectiles[i].Height);
 
-                    rectangle2 = new Rectangle((int)enemies[j].Position.X - enemies[j].Width / 2,
-                    (int)enemies[j].Position.Y - enemies[j].Height / 2,
-                    enemies[j].Width, enemies[j].Height);
+					rectangle2 = new Rectangle((int)enemies[j].Position.X - enemies[j].Width / 2,
+						(int)enemies[j].Position.Y - enemies[j].Height / 2,
+						enemies[j].Width, enemies[j].Height);
 
-                    // Determine if the two objects collided with each other
-                    if (rectangle1.Intersects(rectangle2))
-                    {
+					// Determine if the two objects collided with each other
+					if (rectangle1.Intersects(rectangle2))
+					{
 						if(rectangle1.Y+rectangle1.Height < rectangle2.Y + rectangle2.Height/2)
 						{
 							enemies[j].Health -= projectiles[i].Damage * 2;
@@ -588,12 +603,13 @@ namespace DumbGame
 						{
 							enemies[j].Health -= projectiles[i].Damage;
 						}
-                        
-                        projectiles[i].Active = false;
-                    }
-                }
-            }
-        }
+
+						projectiles[i].Active = false;
+					}
+				}
+			}
+		}
+
 	}
 }
 
